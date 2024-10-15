@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        
+        <div class="logout">
+            <form action="/logout" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
+                <button type="submit">Déconnexion</button>
+            </form>
+        </div>
+
+        <h2>Ajouter un livre</h2>
+        <form action="/add_book" method="POST">
+            <input type="text" name="title" placeholder="Titre" required>
+            <input type="text" name="author" placeholder="Auteur" required>
+            <input type="text" name="genre" placeholder="Genre" required>
+            <input type="number" name="publication_year" placeholder="Année de publication" required>
+            <input type="text" name="isbn" placeholder="ISBN" required>
+            <select name="status" required>
+                <option value="">Statut</option>
+                <option value="disponible">Disponible</option>
+                <option value="emprunté">Emprunté</option>
+                <option value="réservé">Réservé</option>
+            </select>
+            <button type="submit">Ajouter le livre</button>
+        </form>
+
+        <h2>Liste des livres</h2>
+        <input type="text" id="search" placeholder="Rechercher par titre ou auteur" onkeyup="filterBooks()">
+        <table>
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Auteur</th>
+                    <th>Genre</th>
+                    <th>Année de publication</th>
+                    <th>ISBN</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="bookTable">
+                <!-- Book rows will be populated here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Fetch books from the backend and populate the table
+        async function fetchBooks() {
+            try {
+                const response = await fetch('/api/books');
+                const books = await response.json();
+                const tableBody = document.getElementById('bookTable');
+                tableBody.innerHTML = ''; // Clear existing rows
+
+                books.forEach(book => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.genre}</td>
+                        <td>${book.publication_year}</td>
+                        <td>${book.isbn}</td>
+                        <td>${book.status}</td>
+                        <td>
+                            <form action="/update_book/${book.isbn}" method="POST" style="display:inline;">
+                                <button type="submit">Modifier</button>
+                            </form>
+                            <form action="/delete_book/${book.isbn}" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce livre ?');">Supprimer</button>
+                            </form>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        }
+
+        // Call fetchBooks on page load
+        document.addEventListener('DOMContentLoaded', fetchBooks);
+
+        // Function to filter books based on input
+        function filterBooks() {
+            const input = document.getElementById('search');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById("bookTable");
+            const rows = table.getElementsByTagName("tr");
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName("td");
+                let match = false;
+
+                for (let j = 0; j < cells.length - 1; j++) { // Exclude the last column (Actions)
+                    if (cells[j]) {
+                        const cellText = cells[j].textContent || cells[j].innerText;
+                        if (cellText.toLowerCase().indexOf(filter) > -1) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+                rows[i].style.display = match ? "" : "none";
+            }
+        }
+    </script>
+</body>
+</html>
