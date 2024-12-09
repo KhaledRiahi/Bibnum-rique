@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from bookmanagement import book_management_bp
+import logging
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")
+# Connect to MongoDB Atlas
+client = MongoClient("mongodb+srv://khaleduser:FW5VoILzxQ9OR7xb@cluster0.eij2z.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client["Bibliothéque_Numérique"]
 users_collection = db["users"]
 
@@ -18,8 +20,8 @@ admin_user = {
 if not users_collection.find_one({"username": "admin"}):
     users_collection.insert_one(admin_user)
 
-
 app.register_blueprint(book_management_bp)
+
 # Home Page
 @app.route('/')
 def home():
@@ -60,6 +62,13 @@ def register():
 # Login Page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if 'username' in session:  # If the user is already logged in, redirect accordingly
+        flash("You are already logged in.")
+        if session['role'] == 'admin':
+            return redirect(url_for('admin_dashboard'))
+        else:
+            return redirect(url_for('home'))
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -99,11 +108,8 @@ def admin_dashboard():
     else:
         flash("Access denied. You are not authorized to view this page.")
         return redirect(url_for('home'))
-    
 
-
+# Run the Flask app
 if __name__ == '__main__':
-    app.run(
-        port=5001,  # Make sure the parentheses are correctly closed
-        debug=True
-    )
+    logging.basicConfig(level=logging.DEBUG)
+    app.run(port=5001, debug=True)

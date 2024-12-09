@@ -1,45 +1,115 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #05262D; /* Dark Teal background */
+    color: #E0E0E0;
     margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding: 20px;
 }
 
+/* Container */
 .container {
-    background-color: white;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #0B5868; /* Dark Teal for the main container */
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+h1 {
+    color: #FFE44B; /* Bright Yellow for title */
     text-align: center;
 }
 
-input, select, button {
-    padding: 10px;
-    margin: 10px 0;
+/* Logout Button */
+.logout button {
+    background-color: #05262D; /* Dark Teal */
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout button:hover {
+    background-color: #FFE44B; /* Bright Yellow */
+}
+
+/* Form Styles */
+form {
+    margin-bottom: 20px;
+    
+}
+
+form input,
+form select,
+form button {
     width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #05262D; /* Dark Teal */
+    border-radius: 4px;
     box-sizing: border-box;
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
+/* Submit Button */
+form button {
+    background-color: #FFE44B; /* Bright Yellow */
+    color: #05262D; /* Dark Teal */
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #45a049;
+form button:hover {
+    background-color: #0B5868; /* Dark Teal */
+}
+
+/* Book List Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #968445; /* Muted Brown for table background */
+    color: #ffffff;
+    border-radius: 4px;
+    
+    
+}
+
+th,
+td { 
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #605056; /* Dark Brown for table borders */
+}
+
+th {
+    background-color: #0B5868; /* Dark Teal */
+}
+
+tr:nth-child(even) {
+    background-color: #605056; /* Dark Brown for alternating row colors */
+}
+
+tr:hover {
+    background-color: #FFE44B; /* Bright Yellow on hover */
+    color: #05262D; /* Dark Teal for text on hover */
+}
+
+/* Search Bar */
+#search {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #0B5868; /* Dark Teal */
+    border-radius: 4px;
 }
 
 a {
-    color: #4CAF50;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
+    color: #A1E3D8; /* Light Teal */
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to your CSS -->
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ session.get('username') }}</h1>
+        <button onclick="logoutUser()">Logout</button>
+    </header>
+    <script>
+        function logoutUser() {
+            window.location.href = "{{ url_for('logout') }}";
+        }
+    </script>
+
+    <section id="search-section">
+        <h2>Search and Filter Books</h2>
+        <form id="filter-form" method="GET" action="{{ url_for('get_books') }}">
+            <input type="text" name="search" placeholder="Search books...">
+            <div>
+                <label><input type="checkbox" name="filter" value="title"> Title</label>
+                <label><input type="checkbox" name="filter" value="author"> Author</label>
+                <label><input type="checkbox" name="filter" value="genre"> Genre</label>
+                <label><input type="checkbox" name="filter" value="isbn"> ISBN</label>
+                <label><input type="checkbox" name="filter" value="publication_year"> Publication Year</label>
+            </div>
+            <button type="submit">Search</button>
+        </form>
+    </section>
+
+    <section id="books-section">
+        <h2>All Books</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>ISBN</th>
+                    <th>Publication Year</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through books from the backend -->
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.genre }}</td>
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.publication_year }}</td>
+                    <td>{{ book.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

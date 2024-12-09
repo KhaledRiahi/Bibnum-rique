@@ -3,18 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to your CSS -->
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenue dans la bibliothèque numérique</h1>
-        {% if username %}
-            <p>Bienvenue, {{ username }} ({{ role }})!</p>
-            <a href="/logout">Déconnexion</a>
-        {% else %}
-            <a href="/login">Se connecter</a> | <a href="/register">S'inscrire</a>
-        {% endif %}
-    </div>
+    <header>
+        <h1>Welcome, {{ session.get('username') }}</h1>
+        <button onclick="logoutUser()">Logout</button>
+    </header>
+    <script>
+        function logoutUser() {
+            window.location.href = "{{ url_for('logout') }}";
+        }
+    </script>
+
+<h2>Book List</h2>
+<button onclick="loadBooks()">Refresh</button>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Publication Year</th>
+            <th>ISBN</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="bookTable">
+        <!-- Book rows will be populated here dynamically -->
+    </tbody>
+</table>
+</div>
+
+<!-- JavaScript functions for interacting with the backend -->
+<script>
+// Function to load all books from the server and display them in the table
+async function loadBooks() {
+    try {
+        const response = await fetch('/api/books');
+        const books = await response.json();
+        const bookTable = document.getElementById('bookTable');
+        
+        // Clear existing rows
+        bookTable.innerHTML = '';
+        
+        // Populate table with book data
+        books.forEach(book => {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.genre}</td>
+                <td>${book.publication_year}</td>
+                <td>${book.isbn}</td>
+                <td>${book.status}</td>
+                <td>
+                    <button onclick="modifyBook('${book.isbn}')">Emprunter</button>
+                    <button onclick="deleteBook('${book.isbn}')">Retourner</button>
+                </td>
+            `;
+            
+            bookTable.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading books:', error);
+    }
+}
+</script>
 </body>
 </html>
